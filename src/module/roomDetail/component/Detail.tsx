@@ -1,12 +1,11 @@
 import "./Detail.less";
-import React, {Fragment} from "react";
+import React, {Fragment, useMemo} from "react";
 import {connect, DispatchProp} from "react-redux";
 import {actions} from "module/roomDetail";
 import {RootState} from "type/state";
 import {State as StateProps, listItem} from "../type";
 import {Card} from "antd";
 import DetailModal from "./DetailModal";
-import AddModal from "./AddModal";
 import EditModal from "./EditModal";
 import DeleteBtn from "./DeleteBtn";
 
@@ -17,9 +16,14 @@ function Detail({timeList, dispatch, userName}: Props) {
         dispatch(actions.getRoomDetail(item.user));
     };
 
+    const initValueAddModal = useMemo(() => {
+        const [item] = timeList.filter(term => !term.status);
+        return {...item, user: userName};
+    }, [timeList, userName]);
+
     return (
         <Fragment>
-            <AddModal timeList={timeList} userName={userName} />
+            <EditModal item={initValueAddModal} userName={userName} title="新增" />
             {timeList.map(item => {
                 const [, time] = item.time;
 
